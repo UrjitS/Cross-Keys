@@ -1,6 +1,6 @@
-'''
+"""
 Main file for the Cross Keyboard application.
-'''
+"""
 import json
 import re
 import tkinter as tk
@@ -182,7 +182,7 @@ class App(customtkinter.CTk):
         self.port_entry = customtkinter.CTkEntry(
             self, width=500, height=50, placeholder_text="Receiver Port Number"
         )
-        
+
         self.port_entry.grid(row=1, column=1, padx=0)
 
         # Load the data from the file
