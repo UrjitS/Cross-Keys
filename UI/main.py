@@ -1,3 +1,6 @@
+'''
+Main file for the Cross Keyboard application.
+'''
 import json
 import re
 import tkinter as tk
@@ -179,12 +182,13 @@ class App(customtkinter.CTk):
         self.port_entry = customtkinter.CTkEntry(
             self, width=500, height=50, placeholder_text="Receiver Port Number"
         )
+        
         self.port_entry.grid(row=1, column=1, padx=0)
 
         # Load the data from the file
         try:
-            with open("connection.json", "r") as f:
-                data = json.load(f)
+            with open("connection.json", "r") as connection_file:
+                data = json.load(connection_file)
         except FileNotFoundError:
             print("File not found: connection.json")
             # Handle the error here
@@ -428,11 +432,11 @@ class App(customtkinter.CTk):
         # change text on Label
         if not options.RUNNING:
             options.UI_RESET = False
-            str = "Waiting For Start"
+            temp_str = "Waiting For Start"
             for _ in range(self.counter):
-                str += "."
+                temp_str += "."
 
-            self.program_status.set(str)
+            self.program_status.set(temp_str)
 
             if self.counter == 3:
                 self.counter = 0
@@ -475,8 +479,8 @@ class App(customtkinter.CTk):
             # Save the IP address and port number to a file
             data = {"ip_address": ip_address, "port_number": port_number}
             try:
-                with open("connection.json", "w") as f:
-                    json.dump(data, f)
+                with open("connection.json", "w") as connection_f:
+                    json.dump(data, connection_f)
             except FileNotFoundError:
                 print("File not found: connection.json")
                 # Handle the error here

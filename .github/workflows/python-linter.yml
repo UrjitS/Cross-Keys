@@ -11,4 +11,5 @@ jobs:
         source: "UI"
         mypy-options: "--ignore-missing-imports --show-error-codes"
         isort-options: "-w 100"
+        pylint-options: "--rcfile=setup.cfg"
         django: false
