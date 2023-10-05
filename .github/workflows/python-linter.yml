@@ -11,7 +11,7 @@ jobs:
         python-version: 3.8  # Specify the Python version you need
     - name: Install dependencies
       run: |
-        pip install customtkinter
+        pip install -r requirements.txt  # Replace with the actual path to your requirements.txt
     - name: Python Linter
       uses: sunnysid3up/python-linter@v0.1-beta.7
       with:
