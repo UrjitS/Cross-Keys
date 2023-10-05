@@ -5,8 +5,12 @@ import json
 import tkinter as tk
 import options
 
-customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
+customtkinter.set_appearance_mode(
+    "System"
+)  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme(
+    "green"
+)  # Themes: "blue" (standard), "green", "dark-blue"
 
 
 def change_appearance_mode_event(new_appearance_mode: str):
@@ -84,10 +88,9 @@ class App(customtkinter.CTk):
         self.appearance_mode_option_menu.set("Dark")
         self.scaling_option_menu.set("100%")
         self.program_status.set("Waiting")
-       
-        # self.after(500, self.update_time) 
 
-    
+        # self.after(500, self.update_time)
+
     def create_left_sidebar(self):
         """
         Creates the left sidebar frame with widgets.
@@ -105,33 +108,45 @@ class App(customtkinter.CTk):
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
-        
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Cross Keyboard",
-                                                 font=customtkinter.CTkFont(size=20, weight="bold"))
+
+        self.logo_label = customtkinter.CTkLabel(
+            self.sidebar_frame,
+            text="Cross Keyboard",
+            font=customtkinter.CTkFont(size=20, weight="bold"),
+        )
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-        
-        self.start_service_button = customtkinter.CTkButton(self.sidebar_frame, text="Start",
-                                                        command=self.start_service)
+
+        self.start_service_button = customtkinter.CTkButton(
+            self.sidebar_frame, text="Start", command=self.start_service
+        )
         self.start_service_button.grid(row=1, column=0, padx=20, pady=10)
-        self.stop_service_button = customtkinter.CTkButton(self.sidebar_frame, text="Stop",
-                                                        command=self.stop_service,
-                                                        state="disabled")
+        self.stop_service_button = customtkinter.CTkButton(
+            self.sidebar_frame, text="Stop", command=self.stop_service, state="disabled"
+        )
         self.stop_service_button.grid(row=2, column=0, padx=20, pady=10)
-        
-        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
+
+        self.appearance_mode_label = customtkinter.CTkLabel(
+            self.sidebar_frame, text="Appearance Mode:", anchor="w"
+        )
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
-        self.appearance_mode_option_menu = customtkinter.CTkOptionMenu(self.sidebar_frame,
-                                                                       values=["Light", "Dark", "System"],
-                                                                       command=change_appearance_mode_event)
+        self.appearance_mode_option_menu = customtkinter.CTkOptionMenu(
+            self.sidebar_frame,
+            values=["Light", "Dark", "System"],
+            command=change_appearance_mode_event,
+        )
         self.appearance_mode_option_menu.grid(row=6, column=0, padx=20, pady=(10, 10))
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
+        self.scaling_label = customtkinter.CTkLabel(
+            self.sidebar_frame, text="UI Scaling:", anchor="w"
+        )
         self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
-        self.scaling_option_menu = customtkinter.CTkOptionMenu(self.sidebar_frame,
-                                                               values=["80%", "90%", "100%", "110%", "120%"],
-                                                               command=change_scaling_event)
+        self.scaling_option_menu = customtkinter.CTkOptionMenu(
+            self.sidebar_frame,
+            values=["80%", "90%", "100%", "110%", "120%"],
+            command=change_scaling_event,
+        )
         self.scaling_option_menu.grid(row=8, column=0, padx=20, pady=(10, 20))
         self.image_label = customtkinter.CTkLabel(self, text="")
-    
+
     def create_main_frame(self):
         """
         Creates the main frame of the application.
@@ -147,14 +162,22 @@ class App(customtkinter.CTk):
         Returns:
         None
         """
-        self.status_output = tk.Label(self, textvariable=self.program_status, font=("Arial", 15))
+        self.status_output = tk.Label(
+            self, textvariable=self.program_status, font=("Arial", 15)
+        )
 
-        self.status_output.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
+        self.status_output.grid(
+            row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+        )
 
         # create textbox
-        self.ip_address_entry = customtkinter.CTkEntry(self, width=500, height=50, placeholder_text="Receiver IP Address")
+        self.ip_address_entry = customtkinter.CTkEntry(
+            self, width=500, height=50, placeholder_text="Receiver IP Address"
+        )
         self.ip_address_entry.grid(row=0, column=1, padx=0, pady=80)
-        self.port_entry = customtkinter.CTkEntry(self, width=500, height=50, placeholder_text="Receiver Port Number")
+        self.port_entry = customtkinter.CTkEntry(
+            self, width=500, height=50, placeholder_text="Receiver Port Number"
+        )
         self.port_entry.grid(row=1, column=1, padx=0)
 
         # Load the data from the file
@@ -169,15 +192,17 @@ class App(customtkinter.CTk):
             print("Invalid JSON format in connection.json")
             # Handle the error here
             data = {}
-            
+
         # Extract the IP address and port number
         ip_address = data.get("ip_address", "")
         port_number = data.get("port_number", "")
 
-        if self.validate_ip_address(ip_address) and self.validate_port_number(port_number):
+        if self.validate_ip_address(ip_address) and self.validate_port_number(
+            port_number
+        ):
             self.ip_address_entry.insert(0, ip_address)
             self.port_entry.insert(0, port_number)
-        
+
     def create_right_sidebar(self):
         """
         Creates the right sidebar frame with widgets.
@@ -194,36 +219,59 @@ class App(customtkinter.CTk):
         Returns:
         None
         """
-         # create radiobutton frame
-        self.radiobutton_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-        self.radiobutton_frame.grid(row=0, column=3, rowspan=4, columnspan=10, sticky="nsew")
+        # create radiobutton frame
+        self.radiobutton_frame = customtkinter.CTkFrame(
+            self, width=140, corner_radius=0
+        )
+        self.radiobutton_frame.grid(
+            row=0, column=3, rowspan=4, columnspan=10, sticky="nsew"
+        )
         self.radio_button_value = tkinter.IntVar(value=0)
-        self.label_radio_group = customtkinter.CTkLabel(master=self.radiobutton_frame, text="Options:")
-        self.label_radio_group.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="")
-        self.sender_radio_button = customtkinter.CTkRadioButton(master=self.radiobutton_frame,
-                                                           border_color="white",
-                                                            border_width_unchecked=5,
-                                                           border_width_checked=5,
-                                                           hover_color="blue",
-                                                           command=self.update_text,
-                                                           text="Sender   ", variable=self.radio_button_value, value=0)
+        self.label_radio_group = customtkinter.CTkLabel(
+            master=self.radiobutton_frame, text="Options:"
+        )
+        self.label_radio_group.grid(
+            row=0, column=2, columnspan=1, padx=10, pady=10, sticky=""
+        )
+        self.sender_radio_button = customtkinter.CTkRadioButton(
+            master=self.radiobutton_frame,
+            border_color="white",
+            border_width_unchecked=5,
+            border_width_checked=5,
+            hover_color="blue",
+            command=self.update_text,
+            text="Sender   ",
+            variable=self.radio_button_value,
+            value=0,
+        )
         self.sender_radio_button.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-        self.receiver_radio_button = customtkinter.CTkRadioButton(master=self.radiobutton_frame,
-                                                           border_color="white",
-                                                           border_width_unchecked=5,
-                                                           border_width_checked=5,
-                                                           hover_color="blue",
-                                                           command=self.update_text,
-                                                           text="Receiver", variable=self.radio_button_value, value=1)
+        self.receiver_radio_button = customtkinter.CTkRadioButton(
+            master=self.radiobutton_frame,
+            border_color="white",
+            border_width_unchecked=5,
+            border_width_checked=5,
+            hover_color="blue",
+            command=self.update_text,
+            text="Receiver",
+            variable=self.radio_button_value,
+            value=1,
+        )
         self.receiver_radio_button.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-        self.screen_share_button = customtkinter.CTkCheckBox(master=self.radiobutton_frame, text="Screen Share")
-        self.screen_share_button.grid(row=3, column=2, pady=(20, 0), padx=20, sticky="n")
+        self.screen_share_button = customtkinter.CTkCheckBox(
+            master=self.radiobutton_frame, text="Screen Share"
+        )
+        self.screen_share_button.grid(
+            row=3, column=2, pady=(20, 0), padx=20, sticky="n"
+        )
 
-        self.label_radio_group = customtkinter.CTkLabel(master=self.radiobutton_frame, text="                          "
-                                                                                            "         "
-                                                                                            " \n")
-        self.label_radio_group.grid(row=6, column=2, columnspan=1, padx=10, pady=900, sticky="")
-    
+        self.label_radio_group = customtkinter.CTkLabel(
+            master=self.radiobutton_frame,
+            text="                          " "         " " \n",
+        )
+        self.label_radio_group.grid(
+            row=6, column=2, columnspan=1, padx=10, pady=900, sticky=""
+        )
+
     def update_text(self):
         """
         Updates the text of the IP address and port number entry fields based on the selected radio button.
@@ -244,7 +292,7 @@ class App(customtkinter.CTk):
         else:
             self.ip_address_entry.configure(placeholder_text="Device IP Address")
             self.port_entry.configure(placeholder_text="Port Number")
-            
+
     def start_service(self):
         """
         Starts the sender or receiver service based on the selected radio button.
@@ -262,35 +310,33 @@ class App(customtkinter.CTk):
         """
         options.RUNNING = True
         options.ERROR = False
-        if self.validate_ip_address(self.ip_address_entry.get()) and self.validate_port_number(self.port_entry.get()):
+        if self.validate_ip_address(
+            self.ip_address_entry.get()
+        ) and self.validate_port_number(self.port_entry.get()):
             self.program_status.set("Starting Sender Service")
-            service_choice = self.radio_button_value.get() 
+            service_choice = self.radio_button_value.get()
             if service_choice == 0:
                 # Hide the main frame and the right sidebar frame
                 # self.attributes("-fullscreen", True)
                 self.port_entry.grid_remove()
                 self.ip_address_entry.grid_remove()
-                self.radiobutton_frame.grid_remove() # Hide the right sidebar frame
+                self.radiobutton_frame.grid_remove()  # Hide the right sidebar frame
                 self.appearance_mode_label.grid_remove()
                 self.appearance_mode_option_menu.grid_remove()
                 self.scaling_label.grid_remove()
                 self.scaling_option_menu.grid_remove()
-               
 
             elif service_choice == 1:
                 print("Receiver")
             else:
                 self.program_status.set("Error: Invalid IP Address or Port")
-            
+
             self.program_status.set("Service Running")
             self.start_service_button.configure(state="disabled")  # Disable the button
             self.stop_service_button.configure(state="normal")  # Enable the button
         else:
             self.program_status.set("Error: Invalid IP Address or Port")
 
-    
-        
-    
     def validate_ip_address(self, ip_address: str):
         """
         Validates the IP address entered by the user.
@@ -304,7 +350,7 @@ class App(customtkinter.CTk):
         Returns:
         bool: True if the IP address is valid, False otherwise.
         """
-        ip_address_regex = r'^(\d{1,3}\.){3}\d{1,3}$'
+        ip_address_regex = r"^(\d{1,3}\.){3}\d{1,3}$"
         return bool(re.match(ip_address_regex, ip_address))
 
     def validate_port_number(self, port_number: str):
@@ -320,20 +366,20 @@ class App(customtkinter.CTk):
         Returns:
         bool: True if the port number is valid, False otherwise.
         """
-        port_regex = r'^\d{1,5}$'
+        port_regex = r"^\d{1,5}$"
         return bool(re.match(port_regex, port_number))
 
     def update_ui_on_stop(self):
         print("Reseting UI")
-        self.attributes("-fullscreen", False) # Exit fullscreen
+        self.attributes("-fullscreen", False)  # Exit fullscreen
         self.port_entry.grid()
         self.ip_address_entry.grid()
-        self.radiobutton_frame.grid() # Hide the right sidebar frame
+        self.radiobutton_frame.grid()  # Hide the right sidebar frame
         self.appearance_mode_label.grid()
         self.appearance_mode_option_menu.grid()
         self.scaling_label.grid()
         self.scaling_option_menu.grid()
-    
+
     def stop_service(self):
         """
         Stops the sender or receiver service and updates the program status label.
@@ -353,15 +399,14 @@ class App(customtkinter.CTk):
         options.ENABLE_FULLSCREEN = False
         self.program_status.set("Stopped Service")
         self.update_ui_on_stop()
-        
-        if self.sender_thread is not None: 
+
+        if self.sender_thread is not None:
             print("Closing Sender")
         if self.receiver_thread is not None:
             print("Closing Receiver")
-            
+
         self.stop_service_button.configure(state="disabled")  # Disable the stop button
-        self.start_service_button.configure(state="normal")   # Enable the start button
-        
+        self.start_service_button.configure(state="normal")  # Enable the start button
 
     def update_time(self):
         """
@@ -401,7 +446,7 @@ class App(customtkinter.CTk):
         if options.ENABLE_FULLSCREEN:
             options.UI_RESET = False
             self.attributes("-fullscreen", True)
-            self.focus_set() # Prevents the window from losing focus
+            self.focus_set()  # Prevents the window from losing focus
             options.ENABLE_FULLSCREEN = False
         self.after(500, self.update_time)
 
@@ -420,10 +465,12 @@ class App(customtkinter.CTk):
         None
         """
         options.RUNNING = False
-        if self.validate_ip_address(self.ip_address_entry.get()) and self.validate_port_number(self.port_entry.get()):
+        if self.validate_ip_address(
+            self.ip_address_entry.get()
+        ) and self.validate_port_number(self.port_entry.get()):
             ip_address = self.ip_address_entry.get()
             port_number = self.port_entry.get()
-            
+
             # Save the IP address and port number to a file
             data = {"ip_address": ip_address, "port_number": port_number}
             try:
@@ -435,7 +482,7 @@ class App(customtkinter.CTk):
             except PermissionError:
                 print("Permission denied: connection.json")
                 # Handle the error here
-                
+
         self.destroy()
 
 
