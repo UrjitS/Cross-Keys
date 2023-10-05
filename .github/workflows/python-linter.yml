@@ -4,14 +4,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt  # Replace with the actual path to your requirements.txt
-    - name: Upgrade Click
-      run: pip install --upgrade click
+    - uses: actions/checkout@v2  
     - name: Python Linter
-      uses: sunnysid3up/python-linter@v0.1-beta.7
+      uses: sunnysid3up/python-linter@master
       with:
-        source: UI
+        source: "UI"
         mypy-options: "--ignore-missing-imports --show-error-codes"
+        isort-options: "-w 100"
+        django: false
