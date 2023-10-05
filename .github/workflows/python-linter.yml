@@ -5,9 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8  # Specify the Python version you need
+    - name: Install dependencies
+      run: |
+        pip install customtkinter
     - name: Python Linter
       uses: sunnysid3up/python-linter@v0.1-beta.7
       with:
         source: UI
-        virtualenv: |
-          pip install customtkinter
