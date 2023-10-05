@@ -1,8 +1,9 @@
-import tkinter.messagebox
-import customtkinter
-import re
 import json
+import re
 import tkinter as tk
+import tkinter.messagebox
+
+import customtkinter
 import options
 
 customtkinter.set_appearance_mode(
