@@ -1,13 +1,13 @@
-"""
-Main file for the Cross Keyboard application.
-"""
-import json
-import re
-import tkinter as tk
 import tkinter.messagebox
-
 import customtkinter
+from receiver import create_receiver_connection
+from sender import create_sender_connection
+import re
+import json
+import threading
 import options
+import tkinter as tk
+
 
 customtkinter.set_appearance_mode(
     "System"
@@ -68,6 +68,7 @@ class App(customtkinter.CTk):
         None
         """
         super().__init__()
+        self.stop_threading_event = threading.Event()
         self.receiver_thread = None
         self.sender_thread = None
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -93,7 +94,8 @@ class App(customtkinter.CTk):
         self.scaling_option_menu.set("100%")
         self.program_status.set("Waiting")
 
-        # self.after(500, self.update_time)
+        self.after(500, self.update_time)
+        # self.after(500, self.display_screen_share)
 
     def create_left_sidebar(self):
         """
@@ -182,13 +184,12 @@ class App(customtkinter.CTk):
         self.port_entry = customtkinter.CTkEntry(
             self, width=500, height=50, placeholder_text="Receiver Port Number"
         )
-
         self.port_entry.grid(row=1, column=1, padx=0)
 
         # Load the data from the file
         try:
-            with open("connection.json", "r") as connection_file:
-                data = json.load(connection_file)
+            with open("connection.json", "r") as f:
+                data = json.load(f)
         except FileNotFoundError:
             print("File not found: connection.json")
             # Handle the error here
@@ -318,7 +319,8 @@ class App(customtkinter.CTk):
         if self.validate_ip_address(
             self.ip_address_entry.get()
         ) and self.validate_port_number(self.port_entry.get()):
-            self.program_status.set("Starting Sender Service")
+            self.program_status.set("Starting Service")
+            self.stop_threading_event.clear()
             service_choice = self.radio_button_value.get()
             if service_choice == 0:
                 # Hide the main frame and the right sidebar frame
@@ -331,8 +333,31 @@ class App(customtkinter.CTk):
                 self.scaling_label.grid_remove()
                 self.scaling_option_menu.grid_remove()
 
+                sender_options = {
+                    "ip_address": self.ip_address_entry.get(),
+                    "port": self.port_entry.get(),
+                    "screen_share": self.screen_share_button.get(),
+                    "window": None,
+                }
+
+                # Start the sender thread
+                self.sender_thread = threading.Thread(
+                    target=create_sender_connection,
+                    args=(self.stop_threading_event, sender_options),
+                )
+                self.sender_thread.start()
             elif service_choice == 1:
-                print("Receiver")
+                receiver_options = {
+                    "ip_address": self.ip_address_entry.get(),
+                    "port": self.port_entry.get(),
+                    "screen_share": self.screen_share_button.get(),
+                }
+
+                self.receiver_thread = threading.Thread(
+                    target=create_receiver_connection,
+                    args=(self.stop_threading_event, receiver_options),
+                )
+                self.receiver_thread.start()
             else:
                 self.program_status.set("Error: Invalid IP Address or Port")
 
@@ -341,6 +366,39 @@ class App(customtkinter.CTk):
             self.stop_service_button.configure(state="normal")  # Enable the button
         else:
             self.program_status.set("Error: Invalid IP Address or Port")
+
+    def display_screen_share(self):
+        if (
+            (not options.RUNNING)
+            or (options.ERROR)
+            or (options.SCREEN_SHARE_IMAGE is None)
+        ):
+            self.after(500, self.display_screen_share)
+            return
+        if not self.screen_share_button.get() or self.radio_button_value.get() == 1:
+            return
+        if options.SCREEN_SHARE_IMAGE is not None:
+            print("Displaying screen share")
+            image = options.SCREEN_SHARE_IMAGE
+            # Get the size of the display screen
+            screen_width = self.winfo_screenwidth()
+            screen_height = self.winfo_screenheight()
+
+            # Resize the image to the size of the display screen
+            resized_image = image.resize((screen_width, screen_height))
+
+            # Create a PhotoImage object from the resized image
+            photo = customtkinter.CTkImage(
+                resized_image, size=(screen_width, screen_height)
+            )
+            # Create a PhotoImage object from the image
+            photo = customtkinter.CTkImage(image, size=(screen_width, screen_height))
+
+            # Create a Label widget to display the image
+            self.image_label.configure(image=photo)
+            self.image_label.grid(row=2, column=0, pady=(200, 10), sticky="nsew")
+
+        self.after(500, self.display_screen_share)
 
     def validate_ip_address(self, ip_address: str):
         """
@@ -402,13 +460,22 @@ class App(customtkinter.CTk):
         """
         options.RUNNING = False
         options.ENABLE_FULLSCREEN = False
-        self.program_status.set("Stopped Service")
-        self.update_ui_on_stop()
+        self.stop_threading_event.set()
 
-        if self.sender_thread is not None:
+        if options.ERROR_MESSAGE:
+            self.program_status.set("Error: " + options.ERROR_MESSAGE)
+        else:
+            self.program_status.set("Stopped Service")
+
+        if self.sender_thread is not None and self.sender_thread.is_alive():
             print("Closing Sender")
-        if self.receiver_thread is not None:
+            self.sender_thread.join()
+            self.stop_threading_event.set()
+            self.update_ui_on_stop()
+        if self.receiver_thread is not None and self.receiver_thread.is_alive():
             print("Closing Receiver")
+            self.receiver_thread.join()
+            self.stop_threading_event.set()
 
         self.stop_service_button.configure(state="disabled")  # Disable the stop button
         self.start_service_button.configure(state="normal")  # Enable the start button
@@ -432,11 +499,11 @@ class App(customtkinter.CTk):
         # change text on Label
         if not options.RUNNING:
             options.UI_RESET = False
-            temp_str = "Waiting For Start"
+            str = "Waiting For Start"
             for _ in range(self.counter):
-                temp_str += "."
+                str += "."
 
-            self.program_status.set(temp_str)
+            self.program_status.set(str)
 
             if self.counter == 3:
                 self.counter = 0
@@ -479,8 +546,8 @@ class App(customtkinter.CTk):
             # Save the IP address and port number to a file
             data = {"ip_address": ip_address, "port_number": port_number}
             try:
-                with open("connection.json", "w") as connection_f:
-                    json.dump(data, connection_f)
+                with open("connection.json", "w") as f:
+                    json.dump(data, f)
             except FileNotFoundError:
                 print("File not found: connection.json")
                 # Handle the error here

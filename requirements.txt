@@ -1,1 +1,3 @@
 customtkinter  # Assuming this is the correct package name
+pyautogui
+pynput
