@@ -10,8 +10,6 @@ import tkinter.messagebox
 import customtkinter
 
 import options
-from UI.receiver import create_receiver_connection
-from UI.sender import create_sender_connection
 
 customtkinter.set_appearance_mode(
     "System"
@@ -334,31 +332,33 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
                 self.scaling_label.grid_remove()
                 self.scaling_option_menu.grid_remove()
 
-                sender_options = {
-                    "ip_address": self.ip_address_entry.get(),
-                    "port": self.port_entry.get(),
-                    "screen_share": self.screen_share_button.get(),
-                    "window": None,
-                }
+                # sender_options = {
+                #     "ip_address": self.ip_address_entry.get(),
+                #     "port": self.port_entry.get(),
+                #     "screen_share": self.screen_share_button.get(),
+                #     "window": None,
+                # }
 
                 # Start the sender thread
-                self.sender_thread = threading.Thread(
-                    target=create_sender_connection,
-                    args=(self.stop_threading_event, sender_options),
-                )
-                self.sender_thread.start()
+                # self.sender_thread = threading.Thread(
+                #     target=create_sender_connection,
+                #     args=(self.stop_threading_event, sender_options),
+                # )
+                # self.sender_thread.start()
+                print("Starting Sender")
             elif service_choice == 1:
-                receiver_options = {
-                    "ip_address": self.ip_address_entry.get(),
-                    "port": self.port_entry.get(),
-                    "screen_share": self.screen_share_button.get(),
-                }
+                # receiver_options = {
+                #     "ip_address": self.ip_address_entry.get(),
+                #     "port": self.port_entry.get(),
+                #     "screen_share": self.screen_share_button.get(),
+                # }
 
-                self.receiver_thread = threading.Thread(
-                    target=create_receiver_connection,
-                    args=(self.stop_threading_event, receiver_options),
-                )
-                self.receiver_thread.start()
+                # self.receiver_thread = threading.Thread(
+                #     target=create_receiver_connection,
+                #     args=(self.stop_threading_event, receiver_options),
+                # )
+                # self.receiver_thread.start()
+                print("Starting Receiver")
             else:
                 self.program_status.set("Error: Invalid IP Address or Port")
 
