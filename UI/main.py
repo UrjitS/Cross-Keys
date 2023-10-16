@@ -8,6 +8,7 @@ import tkinter as tk
 import tkinter.messagebox
 
 import customtkinter
+
 import options
 from UI.receiver import create_receiver_connection
 from UI.sender import create_sender_connection
