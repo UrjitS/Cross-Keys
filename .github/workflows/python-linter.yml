@@ -6,6 +6,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # Add this step to install isort
+    - name: Install isort
+      run: pip install isort
+
     # Add this step to display isort version and default settings
     - name: Display isort version and default settings
       run: |
@@ -16,7 +20,7 @@ jobs:
       uses: sunnysid3up/python-linter@master
       with:
         source: "UI"  # Assuming "UI" is the correct path within your repository
-        mypy-options: "--ignore-missing-imports --show-error-codes UI/main.py"
-        isort-options: "-w 100 UI/main.py"
-        pylint-options: "--rcfile=setup.cfg UI/main.py"
+        mypy-options: "--ignore-missing-imports --show-error-codes"
+        isort-options: "-w 100"
+        pylint-options: "--rcfile=setup.cfg"
         django: false
