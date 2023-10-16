@@ -9,7 +9,7 @@ jobs:
       uses: sunnysid3up/python-linter@master
       with:
         source: "UI"  # Assuming "UI" is the correct path within your repository
-        mypy-options: "--ignore-missing-imports --show-error-codes UI/main.py"
-        isort-options: "-w 100 UI/main.py"
-        pylint-options: "--rcfile=setup.cfg UI/main.py"
+        mypy-options: "--ignore-missing-imports --show-error-codes"
+        isort-options: "-w 100"
+        pylint-options: "--rcfile=setup.cfg"
         django: false
