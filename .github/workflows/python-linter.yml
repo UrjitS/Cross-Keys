@@ -4,11 +4,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2  
+    - uses: actions/checkout@v2
+
+    # Add this step to display isort version and default settings
+    - name: Display isort version and default settings
+      run: |
+        isort --version
+        isort --show-config
+
     - name: Python Linter
       uses: sunnysid3up/python-linter@master
       with:
-        source: "UI"
-        mypy-options: "--ignore-missing-imports --show-error-codes"
-        pylint-options: "--rcfile=setup.cfg"
+        source: "UI"  # Assuming "UI" is the correct path within your repository
+        mypy-options: "--ignore-missing-imports --show-error-codes UI/main.py"
+        isort-options: "-w 100 UI/main.py"
+        pylint-options: "--rcfile=setup.cfg UI/main.py"
         django: false
