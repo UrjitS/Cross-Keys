@@ -1,6 +1,7 @@
 """
 This module contains the main application for the Cross Keyboard program.
 """
+# isort: off
 import json
 import re
 import threading
