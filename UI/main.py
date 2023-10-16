@@ -7,6 +7,7 @@ import tkinter as tk
 import tkinter.messagebox
 
 import customtkinter
+
 import options
 
 customtkinter.set_appearance_mode(
