@@ -1,12 +1,12 @@
-import tkinter.messagebox
-import customtkinter
 from receiver import create_receiver_connection
 from sender import create_sender_connection
-import re
+import customtkinter
 import json
-import threading
 import options
+import re
+import threading
 import tkinter as tk
+import tkinter.messagebox
 
 
 customtkinter.set_appearance_mode(
