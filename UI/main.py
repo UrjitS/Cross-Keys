@@ -6,7 +6,9 @@ import re
 import threading
 import tkinter as tk
 import tkinter.messagebox
+
 import customtkinter
+
 import options
 from receiver import create_receiver_connection
 from sender import create_sender_connection

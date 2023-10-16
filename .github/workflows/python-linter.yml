@@ -4,22 +4,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
-    # Add this step to install isort
-    - name: Install isort
-      run: pip install isort
-
-    # Add this step to display isort version and default settings
-    - name: Display isort version and default settings
-      run: |
-        isort --version
-        isort --show-config
-
+    - uses: actions/checkout@v2  
     - name: Python Linter
       uses: sunnysid3up/python-linter@master
       with:
-        source: "UI"  # Assuming "UI" is the correct path within your repository
+        source: "UI"
         mypy-options: "--ignore-missing-imports --show-error-codes"
         isort-options: "-w 100"
         pylint-options: "--rcfile=setup.cfg"
