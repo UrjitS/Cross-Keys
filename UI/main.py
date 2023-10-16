@@ -1,3 +1,6 @@
+"""
+This module contains the main application for the Cross Keyboard program.
+"""
 import json
 import re
 import threading
@@ -22,9 +25,6 @@ def change_appearance_mode_event(new_appearance_mode: str):
     """
     Changes the appearance mode of the application.
 
-    The function is called when the user selects a new appearance mode from the appearance mode option menu. The function
-    sets the appearance mode of the application using the `set_appearance_mode` function from the `customtkinter` module.
-
     Parameters:
     new_appearance_mode (str): The new appearance mode selected by the user.
 
@@ -38,10 +38,6 @@ def change_scaling_event(new_scaling: str):
     """
     Changes the scaling of the widgets in the application.
 
-    The function is called when the user selects a new scaling option from the scaling option menu. The function converts
-    the scaling percentage to a float and sets the widget scaling using the `set_widget_scaling` function from the
-    `customtkinter` module.
-
     Parameters:
     new_scaling (str): The new scaling percentage selected by the user.
 
@@ -52,18 +48,45 @@ def change_scaling_event(new_scaling: str):
     customtkinter.set_widget_scaling(new_scaling_float)
 
 
-class App(customtkinter.CTk):
+def validate_ip_address(ip_address: str):
+    """
+    Validates the IP address entered by the user.
+
+    Parameters:
+    self: The current instance of the App class.
+
+    Returns:
+    bool: True if the IP address is valid, False otherwise.
+    """
+    ip_address_regex = r"^(\d{1,3}\.){3}\d{1,3}$"
+    return bool(re.match(ip_address_regex, ip_address))
+
+
+def validate_port_number(port_number: str):
+    """
+    Validates the port number entered by the user.
+
+    Parameters:
+    self: The current instance of the App class.
+
+    Returns:
+    bool: True if the port number is valid, False otherwise.
+    """
+    port_regex = r"^\d{1,5}$"
+    return bool(re.match(port_regex, port_number))
+
+
+class App(customtkinter.CTk):  # pylint: disable=R0902
+    """
+    The main application for the Cross Keyboard program.
+    """
+
     def __init__(self):
         """
         Initializes the Cross Keyboard application.
 
-        The function sets up the main window of the application with a grid layout and creates the left sidebar, main frame, and
-        right sidebar frames. The function also sets the default values for the appearance mode and scaling option menus, as
-        well as the program status label. The function calls the `update_time` method every 500 milliseconds to update the
-        program status label.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -102,12 +125,8 @@ class App(customtkinter.CTk):
         """
         Creates the left sidebar frame with widgets.
 
-        The left sidebar frame contains the Cross Keyboard logo, start and stop service buttons, and appearance mode and scaling
-        option menus. The appearance mode option menu allows the user to select between light, dark, and system appearance modes.
-        The scaling option menu allows the user to select between 80%, 90%, 100%, 110%, and 120% UI scaling.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -158,13 +177,8 @@ class App(customtkinter.CTk):
         """
         Creates the main frame of the application.
 
-        The main frame contains the IP address and port number entry fields, as well as the program status label. The IP address
-        entry field allows the user to enter the IP address of the receiver. The port number entry field allows the user to enter
-        the port number of the receiver. The program status label displays the current status of the program, such as "Starting
-        Service" or "Service Running".
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -189,8 +203,10 @@ class App(customtkinter.CTk):
 
         # Load the data from the file
         try:
-            with open("connection.json", "r") as f:
-                data = json.load(f)
+            with open(  # pylint: disable=W1514
+                "connection.json", "r"
+            ) as connection_file:
+                data = json.load(connection_file)
         except FileNotFoundError:
             print("File not found: connection.json")
             # Handle the error here
@@ -204,9 +220,7 @@ class App(customtkinter.CTk):
         ip_address = data.get("ip_address", "")
         port_number = data.get("port_number", "")
 
-        if self.validate_ip_address(ip_address) and self.validate_port_number(
-            port_number
-        ):
+        if validate_ip_address(ip_address) and validate_port_number(port_number):
             self.ip_address_entry.insert(0, ip_address)
             self.port_entry.insert(0, port_number)
 
@@ -214,14 +228,8 @@ class App(customtkinter.CTk):
         """
         Creates the right sidebar frame with widgets.
 
-        The right sidebar frame contains two radio buttons for selecting between sender and receiver modes. The radio buttons
-        are contained within a frame with a label that reads "Options:". The radio buttons are styled using the customtkinter
-        module to have a white border and blue hover color. The radio buttons are bound to the `update_text` method, which updates
-        the program status label with the current mode. The right sidebar frame also contains a label that is used to adjust the
-        height of the frame.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -281,14 +289,11 @@ class App(customtkinter.CTk):
 
     def update_text(self):
         """
-        Updates the text of the IP address and port number entry fields based on the selected radio button.
-
-        If the "Sender" radio button is selected, the IP address entry field will display "Receiver IP Address" and the port
-        number entry field will display "Receiver Port Number". If the "Receiver" radio button is selected, the IP address entry
-        field will display "Device IP Address" and the port number entry field will display "Port Number".
+        Updates the text of the IP address and port number entry fields
+        based on the selected radio button.
 
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -304,22 +309,17 @@ class App(customtkinter.CTk):
         """
         Starts the sender or receiver service based on the selected radio button.
 
-        If the "Sender" radio button is selected, the function creates a new thread to run the `create_sender_connection`
-        function with the IP address and port number entered by the user. If the "Receiver" radio button is selected, the
-        function creates a new thread to run the `create_receiver_connection` function with the IP address and port number
-        entered by the user.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
         """
         options.RUNNING = True
         options.ERROR = False
-        if self.validate_ip_address(
-            self.ip_address_entry.get()
-        ) and self.validate_port_number(self.port_entry.get()):
+        if validate_ip_address(self.ip_address_entry.get()) and validate_port_number(
+            self.port_entry.get()
+        ):
             self.program_status.set("Starting Service")
             self.stop_threading_event.clear()
             service_choice = self.radio_button_value.get()
@@ -368,72 +368,16 @@ class App(customtkinter.CTk):
         else:
             self.program_status.set("Error: Invalid IP Address or Port")
 
-    def display_screen_share(self):
-        if (
-            (not options.RUNNING)
-            or (options.ERROR)
-            or (options.SCREEN_SHARE_IMAGE is None)
-        ):
-            self.after(500, self.display_screen_share)
-            return
-        if not self.screen_share_button.get() or self.radio_button_value.get() == 1:
-            return
-        if options.SCREEN_SHARE_IMAGE is not None:
-            print("Displaying screen share")
-            image = options.SCREEN_SHARE_IMAGE
-            # Get the size of the display screen
-            screen_width = self.winfo_screenwidth()
-            screen_height = self.winfo_screenheight()
-
-            # Resize the image to the size of the display screen
-            resized_image = image.resize((screen_width, screen_height))
-
-            # Create a PhotoImage object from the resized image
-            photo = customtkinter.CTkImage(
-                resized_image, size=(screen_width, screen_height)
-            )
-            # Create a PhotoImage object from the image
-            photo = customtkinter.CTkImage(image, size=(screen_width, screen_height))
-
-            # Create a Label widget to display the image
-            self.image_label.configure(image=photo)
-            self.image_label.grid(row=2, column=0, pady=(200, 10), sticky="nsew")
-
-        self.after(500, self.display_screen_share)
-
-    def validate_ip_address(self, ip_address: str):
-        """
-        Validates the IP address entered by the user.
-
-        The function retrieves the IP address entered by the user from the IP address entry field and checks if it matches the
-        format of a valid IP address. If the IP address is valid, the function returns True. Otherwise, it returns False.
-
-        Parameters:
-        self (App): The current instance of the App class.
-
-        Returns:
-        bool: True if the IP address is valid, False otherwise.
-        """
-        ip_address_regex = r"^(\d{1,3}\.){3}\d{1,3}$"
-        return bool(re.match(ip_address_regex, ip_address))
-
-    def validate_port_number(self, port_number: str):
-        """
-        Validates the port number entered by the user.
-
-        The function retrieves the port number entered by the user from the port number entry field and checks if it matches the
-        format of a valid port number. If the port number is valid, the function returns True. Otherwise, it returns False.
-
-        Parameters:
-        self (App): The current instance of the App class.
-
-        Returns:
-        bool: True if the port number is valid, False otherwise.
-        """
-        port_regex = r"^\d{1,5}$"
-        return bool(re.match(port_regex, port_number))
-
     def update_ui_on_stop(self):
+        """
+        Updates the UI when the service is stopped.
+
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        None
+        """
         print("Reseting UI")
         self.attributes("-fullscreen", False)  # Exit fullscreen
         self.port_entry.grid()
@@ -448,13 +392,8 @@ class App(customtkinter.CTk):
         """
         Stops the sender or receiver service and updates the program status label.
 
-        The function sets the `RUNNING` and `ENABLE_FULLSCREEN` variables in the `options` module to False, which stops the
-        sender or receiver service. If the sender thread is running, the function calls the `close_sender_connection` function
-        to close the connection. The function updates the program status label to "Stopped Service" and disables the stop
-        service button while enabling the start service button.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -485,14 +424,8 @@ class App(customtkinter.CTk):
         """
         Updates the program status label with the current status of the program.
 
-        The function checks the values of the `RUNNING`, `ERROR`, and `ENABLE_FULLSCREEN` variables in the `options` module
-        and updates the program status label accordingly. If `RUNNING` is False, the function displays a "Waiting For Start"
-        message with a series of dots to indicate that the program is waiting to start. If `ERROR` is True, the function
-        displays an error message. If `ENABLE_FULLSCREEN` is True, the function sets the application to fullscreen mode. The
-        function calls itself every 500 milliseconds to update the program status label.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
@@ -500,11 +433,11 @@ class App(customtkinter.CTk):
         # change text on Label
         if not options.RUNNING:
             options.UI_RESET = False
-            str = "Waiting For Start"
+            str_message = "Waiting For Start"
             for _ in range(self.counter):
-                str += "."
+                str_message += "."
 
-            self.program_status.set(str)
+            self.program_status.set(str_message)
 
             if self.counter == 3:
                 self.counter = 0
@@ -527,28 +460,26 @@ class App(customtkinter.CTk):
         """
         Handles the "WM_DELETE_WINDOW" event.
 
-        The function sets the `RUNNING` variable in the `options` module to False, which stops the sender or receiver service.
-        The function then calls the `stop_service` method to stop the service and update the program status label. Finally,
-        the function destroys the application window.
-
         Parameters:
-        self (App): The current instance of the App class.
+        self: The current instance of the App class.
 
         Returns:
         None
         """
         options.RUNNING = False
-        if self.validate_ip_address(
-            self.ip_address_entry.get()
-        ) and self.validate_port_number(self.port_entry.get()):
+        if validate_ip_address(self.ip_address_entry.get()) and validate_port_number(
+            self.port_entry.get()
+        ):
             ip_address = self.ip_address_entry.get()
             port_number = self.port_entry.get()
 
             # Save the IP address and port number to a file
             data = {"ip_address": ip_address, "port_number": port_number}
             try:
-                with open("connection.json", "w") as f:
-                    json.dump(data, f)
+                with open(  # pylint: disable=W1514
+                    "connection.json", "w"
+                ) as connection_file:
+                    json.dump(data, connection_file)
             except FileNotFoundError:
                 print("File not found: connection.json")
                 # Handle the error here
