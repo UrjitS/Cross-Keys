@@ -17,6 +17,7 @@ import options
 CurrentlyPressedKeys = []
 client_address = None
 
+
 class Receiver:
     """
     Receiver class handles commands received from the server for mouse and keyboard control.
@@ -136,7 +137,7 @@ class Receiver:
         Handles a mouse click command received from the server.
 
         Args:
-            packet (list): A list of strings containing the command data. 
+            packet (list): A list of strings containing the command data.
             The list should have the following format: [button, x_coordinate, y_coordinate]
 
         Returns:
@@ -183,7 +184,7 @@ class Receiver:
         Handles a mouse scroll command received from the server.
 
         Args:
-            packet (list): A list of strings containing the command data. 
+            packet (list): A list of strings containing the command data.
             The list should have the following format: [scroll_direction]
 
         Returns:
@@ -212,7 +213,7 @@ class Receiver:
         Handles a mouse movement command received from the server.
 
         Args:
-            packet (list): A list of strings containing the command data. 
+            packet (list): A list of strings containing the command data.
             The list should have the following format:
             [screen_width, screen_height, x_coordinate, y_coordinate]
 
