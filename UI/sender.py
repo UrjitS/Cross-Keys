@@ -1,4 +1,4 @@
-isort: False
+#isort: False
 import socket
 import time
 import pyautogui
