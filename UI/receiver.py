@@ -99,12 +99,12 @@ class Receiver:
                         return_value = self.handle_click(packet)
                     elif packet[0] == "K":
                         return_value = self.handle_keyboard(packet)
-                    elif packet[0] == "I":
-                        print("Received I")
-                        screen_share_state = bool(str(packet[1]))
-                        if screen_share_state and screen_share:
-                            self.send_screen = True
-                        print(screen_share_state)
+                    # elif packet[0] == "I":
+                    #     print("Received I")
+                    #     screen_share_state = bool(str(packet[1]))
+                    #     if screen_share_state and screen_share:
+                    #         self.send_screen = True
+                    #     print(screen_share_state)
 
                     # If the return value is False, the client has disconnected
                     if return_value is False:
