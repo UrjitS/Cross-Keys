@@ -311,7 +311,7 @@ class Receiver:
                     # If the connection is accepted, send a 1 comfirmation to the server
                     if self.client_socket:
                         accepted_connection = True
-                        self.client_socket.sendall(b"1")
+                        # self.client_socket.sendall(b"1")
                 # Handle socket timeout
                 except socket.timeout:
                     if not options.RUNNING:
