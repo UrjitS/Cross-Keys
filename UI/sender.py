@@ -366,7 +366,7 @@ class Sender:
         try:
             # Connect to the server
             client_socket.connect(client_address)
-            
+
             # Convert the boolean to a string and encode as a byte string
             screen_share_packet = (
                 f"I{chr(3)}" + str(sender_options) + f"{chr(3)}" + "\r\n"
