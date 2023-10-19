@@ -204,8 +204,8 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
 
         # Load the data from the file
         try:
-            with open(  # pylint: disable=W1514
-                "connection.json", "r"
+            with open(  
+                "connection.json", "r", encoding="UTF-8"
             ) as connection_file:
                 data = json.load(connection_file)
         except FileNotFoundError:
@@ -477,8 +477,8 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
             # Save the IP address and port number to a file
             data = {"ip_address": ip_address, "port_number": port_number}
             try:
-                with open(  # pylint: disable=W1514
-                    "connection.json", "w"
+                with open(
+                    "connection.json", "w", encoding="UTF-8"
                 ) as connection_file:
                     json.dump(data, connection_file)
             except FileNotFoundError:
