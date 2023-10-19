@@ -1,4 +1,4 @@
-# isort: False
+# isort: off
 import socket
 import time
 import pyautogui
@@ -19,14 +19,16 @@ KeyMap = {
     "media_play_pause": "playpause",
 }
 
+
 class Sender:
-    global CLIENT_ADDRESS
-    CLIENT_ADDRESS = None
+    """
+    Sender class that handles sending mouse and keyboard events to the server.
+    """
 
     def __init__(self, ip_address, port, screen_share=False):
-        self.TRACK_MOUSE = True
-        self.TRACK_KEYBOARD = True
-        self.CLIENT_ADDRESS = None
+        self.track_mouse = True
+        self.track_keyboard = True
+        self.client_address = None
         self.socket_fd = None
         pyautogui.FAILSAFE = False
         self.currently_pressed_keys = list()
@@ -49,12 +51,17 @@ class Sender:
             return
 
         print("Connected to IP Address " + str(ip_address) + " and port " + str(port))
+
         # Start key logging
         def on_press(event):
             self.on_press(event)
+
         def on_release(event):
             self.on_release(event)
-        self.keyboard_thread = keyboard.Listener(on_press=on_press, on_release=on_release)
+
+        self.keyboard_thread = keyboard.Listener(
+            on_press=on_press, on_release=on_release
+        )
         self.keyboard_thread.start()
 
         # Start mouse logging
@@ -71,6 +78,14 @@ class Sender:
         return
 
     def send_to_client(self, message):
+        """
+        Purpose:
+            Sends a message to the remote server over the network.
+        Args:
+            message (bytes): The message to be sent.
+        Returns:
+            bool: True if the message was sent successfully, False otherwise.
+        """
         print("Sending message to client: " + message.decode())
         if (not options.RUNNING) or (not isinstance(self.socket_fd, socket.socket)):
             print("Not running")
@@ -110,7 +125,7 @@ class Sender:
             key_pressed = key.char
 
             # Check if keyboard and mouse tracking are enabled
-            if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+            if not self.track_keyboard or not self.track_mouse:
                 return
 
             # Check if the key is currently pressed
@@ -135,13 +150,13 @@ class Sender:
             # Handle the case where the print screen key is pressed
             if special_key_pressed == "print_screen":
                 print("Hit Hot Key")
-                if not self.TRACK_KEYBOARD:
+                if not self.track_keyboard:
                     options.ENABLE_FULLSCREEN = True
-                self.TRACK_KEYBOARD = not self.TRACK_KEYBOARD
-                self.TRACK_MOUSE = not self.TRACK_MOUSE
+                self.track_keyboard = not self.track_keyboard
+                self.track_mouse = not self.track_mouse
 
             # Check if keyboard and mouse tracking are enabled
-            if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+            if not self.track_keyboard or not self.track_mouse:
                 return
 
             # Map the special key to a more readable format if possible
@@ -182,7 +197,7 @@ class Sender:
 
         try:
             # Check if keyboard and mouse tracking are enabled
-            if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+            if not self.track_keyboard or not self.track_mouse:
                 return
 
             # Extract the key that was released
@@ -205,7 +220,7 @@ class Sender:
             return False
         except AttributeError:  # Special Characters i.e. tab, alt, space, ctrl
             # Check if keyboard and mouse tracking are enabled
-            if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+            if not self.track_keyboard or not self.track_mouse:
                 return
 
             # Extract the special key that was released
@@ -245,26 +260,26 @@ class Sender:
             print("Not running")
             return False
         if (
-            (not self.TRACK_KEYBOARD)
-            or (not self.TRACK_MOUSE)
+            (not self.track_keyboard)
+            or (not self.track_mouse)
             or (self.current_mouse_position == (x, y))
         ):
             return
 
-        print("Mouse moved to ({0}, {1})".format(x, y))
+        print(f"Mouse moved to ({x}, {y})")
 
         # Get the size of the primary screen and convert the coordinates to strings
         print("Sending")
         x_coord_bytes = str(x)
         y_coord_bytes = str(y)
 
-        screenWidth, screenHeight = pyautogui.size()
-        screenWidth = str(screenWidth)
-        screenHeight = str(screenHeight)
+        screen_width, screen_height = pyautogui.size()
+        screen_width = str(screen_width)
+        screen_height = str(screen_height)
 
         # Create the packet header and body
         packet_header = f"M{chr(3)}"
-        packet_body = f"{screenWidth}{chr(3)}{screenHeight}{chr(3)}{x_coord_bytes}{chr(3)}{y_coord_bytes}{chr(3)}\r\n"
+        packet_body = f"{screen_width}{chr(3)}{screen_height}{chr(3)}{x_coord_bytes}{chr(3)}{y_coord_bytes}{chr(3)}\r\n"
 
         self.send_to_client(bytes((packet_header + packet_body), "utf-8"))
         self.current_mouse_position = (x, y)
@@ -287,7 +302,7 @@ class Sender:
         if (not options.RUNNING) or (not isinstance(self.socket_fd, socket.socket)):
             print("Not running")
             return False
-        if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+        if not self.track_keyboard or not self.track_mouse:
             return
 
         clicked_button = str(button)[7:][:1]
@@ -307,7 +322,7 @@ class Sender:
 
             print("Sent " + packet_header + packet_body)
 
-    def on_scroll(self, x, y, dx, dy):
+    def on_scroll(self, x, y, dx, dy):  # pylint: disable=W0613
         """
         Purpose:
             Sends a scroll command to the server over the network.
@@ -324,7 +339,7 @@ class Sender:
         if (not options.RUNNING) or (not isinstance(self.socket_fd, socket.socket)):
             print("Not running")
             return False
-        if not self.TRACK_KEYBOARD or not self.TRACK_MOUSE:
+        if not self.track_keyboard or not self.track_mouse:
             return
         # Key_Identifier ETX Scroll_Direction ETX CRLF
         scroll_direction = "d" if dy < 0 else "u"
@@ -345,13 +360,13 @@ class Sender:
             client_socket (socket.socket): The socket object that was created.
         """
         # Create a TCP socket object
-        CLIENT_ADDRESS = (ip_address, port)
+        client_address = (ip_address, port)
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(1)  # Set a timeout value of 5 seconds
 
         try:
             # Connect to the server
-            client_socket.connect(CLIENT_ADDRESS)
+            client_socket.connect(client_address)
 
             # Convert the boolean to a string and encode as a byte string
             screen_share_packet = (
@@ -375,7 +390,7 @@ class Sender:
 
         try:
             # Connect to the server
-            client_socket.connect(CLIENT_ADDRESS)
+            client_socket.connect(client_address)
 
             # Convert the boolean to a string and encode as a byte string
             screen_share_packet = (

@@ -14,8 +14,6 @@ import pyautogui
 import options
 
 # Global variables to track mouse and keyboard state
-CurrentlyPressedKeys = []
-client_address = None
 
 
 class Receiver:
@@ -35,6 +33,7 @@ class Receiver:
         self.ip_address = ip_address
         self.port = port
         self.send_screen = False
+        self.currently_pressed_keys = []
 
         # Create a socket object and check validity
         return_value = self.create_server()
@@ -271,11 +270,11 @@ class Receiver:
             # R = Release
             if key_state == "P":
                 pyautogui.keyDown(key_pressed, _pause=False)
-                CurrentlyPressedKeys.append(key_pressed)
+                self.currently_pressed_keys.append(key_pressed)
             elif key_state == "R":
                 pyautogui.keyUp(key_pressed, _pause=False)
-                if key_pressed in CurrentlyPressedKeys:
-                    CurrentlyPressedKeys.remove(key_pressed)
+                if key_pressed in self.currently_pressed_keys:
+                    self.currently_pressed_keys.remove(key_pressed)
 
         # Handle malformed packets
         except IndexError:
@@ -339,7 +338,7 @@ class Receiver:
         Closes the connection and releases pressed keys and mouse buttons.
         """
         # Release all pressed keys
-        for key in CurrentlyPressedKeys:
+        for key in self.currently_pressed_keys:
             pyautogui.keyUp(key, _pause=False)
 
         # Release mouse button, if any is pressed
