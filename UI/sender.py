@@ -1,4 +1,4 @@
-#isort: False
+# isort: False
 import socket
 import time
 import pyautogui
@@ -19,8 +19,10 @@ KeyMap = {
     "media_play_pause": "playpause",
 }
 
-
 class Sender:
+    global CLIENT_ADDRESS
+    CLIENT_ADDRESS = None
+
     def __init__(self, ip_address, port, screen_share=False):
         self.TRACK_MOUSE = True
         self.TRACK_KEYBOARD = True
@@ -48,10 +50,11 @@ class Sender:
 
         print("Connected to IP Address " + str(ip_address) + " and port " + str(port))
         # Start key logging
-        self.keyboard_thread = keyboard.Listener(
-            on_press=lambda event: self.on_press(event),
-            on_release=lambda event: self.on_release(event),
-        )
+        def on_press(event):
+            self.on_press(event)
+        def on_release(event):
+            self.on_release(event)
+        self.keyboard_thread = keyboard.Listener(on_press=on_press, on_release=on_release)
         self.keyboard_thread.start()
 
         # Start mouse logging
@@ -342,8 +345,30 @@ class Sender:
             client_socket (socket.socket): The socket object that was created.
         """
         # Create a TCP socket object
-        global CLIENT_ADDRESS
-        CLIENT_ADDRESS = (ip_address, int(port))
+        CLIENT_ADDRESS = (ip_address, port)
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.settimeout(1)  # Set a timeout value of 5 seconds
+
+        try:
+            # Connect to the server
+            client_socket.connect(CLIENT_ADDRESS)
+
+            # Convert the boolean to a string and encode as a byte string
+            screen_share_packet = (
+                f"I{chr(3)}" + str(sender_options) + f"{chr(3)}" + "\r\n"
+            )
+
+            # Send the message to the server
+            client_socket.sendall(bytes(screen_share_packet, "utf-8"))
+
+            # Read the response from the server
+
+        except (socket.error, ConnectionRefusedError, OSError) as e:
+            print("Socket error:", e)
+            options.ERROR = True
+            options.RUNNING = False
+            options.ERROR_MESSAGE = "Error connecting to the server: " + str(e)
+            return None
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(1)  # Set a timeout value of 5 seconds
