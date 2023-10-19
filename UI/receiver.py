@@ -302,6 +302,7 @@ class Receiver:
 
             # Accept a single incoming connection
             self.socket_fd.settimeout(0.1)
+            print("Waiting for connection")
             while accepted_connection is False:
                 try:
                     # Accept the connection
@@ -370,7 +371,6 @@ def create_receiver_connection(stop_threading_event, receiver_options):
         receiver_options["port"],
         receiver_options["screen_share"],
     )
-    print("Waiting for connection")
     while not stop_threading_event.is_set():
         # Do some work
         time.sleep(0.1)

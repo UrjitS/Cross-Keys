@@ -28,7 +28,6 @@ class Sender:
     def __init__(self, ip_address, port, screen_share=False):
         self.track_mouse = True
         self.track_keyboard = True
-        self.client_address = None
         self.socket_fd = None
         pyautogui.FAILSAFE = False
         self.currently_pressed_keys = list()
@@ -360,14 +359,14 @@ class Sender:
             client_socket (socket.socket): The socket object that was created.
         """
         # Create a TCP socket object
-        client_address = (ip_address, port)
+        client_address = (str(ip_address), int(port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(1)  # Set a timeout value of 5 seconds
 
         try:
             # Connect to the server
             client_socket.connect(client_address)
-
+            
             # Convert the boolean to a string and encode as a byte string
             screen_share_packet = (
                 f"I{chr(3)}" + str(sender_options) + f"{chr(3)}" + "\r\n"
