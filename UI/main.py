@@ -3,10 +3,10 @@ This module contains the main application for the Cross Keyboard program.
 """
 # isort: off
 import json
-import re
 import threading
 import tkinter as tk
 import tkinter.messagebox
+import ipaddress
 
 import customtkinter
 
@@ -59,8 +59,11 @@ def validate_ip_address(ip_address: str):
     Returns:
     bool: True if the IP address is valid, False otherwise.
     """
-    ip_address_regex = r"^(\d{1,3}\.){3}\d{1,3}$"
-    return bool(re.match(ip_address_regex, ip_address))
+    try:
+        ipaddress.ip_address(ip_address)
+        return True
+    except ValueError:
+        return False
 
 
 def validate_port_number(port_number: str):
@@ -73,8 +76,7 @@ def validate_port_number(port_number: str):
     Returns:
     bool: True if the port number is valid, False otherwise.
     """
-    port_regex = r"^\d{1,5}$"
-    return bool(re.match(port_regex, port_number))
+    return bool(isinstance(port_number, int) and 0 <= port_number <= 65535)
 
 
 class App(customtkinter.CTk):  # pylint: disable=R0902
