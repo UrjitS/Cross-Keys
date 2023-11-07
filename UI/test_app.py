@@ -97,6 +97,7 @@ def test_options_receiver_update_state():
     except RuntimeError:
         print("RuntimeError")
 
+
 def test_ip_address_field():
     """
     Tests to see if the Ip address field stores the correct value.
@@ -140,7 +141,8 @@ def test_ip_address_field():
         app.mainloop()
     except RuntimeError:
         print("RuntimeError")
-        
+
+
 def test_port_field():
     """
     Tests to see if the Port field stores the correct value.
@@ -228,6 +230,7 @@ def test_ip_address_placeholder_change():
         app.mainloop()
     except RuntimeError:
         print("RuntimeError")
+
 
 def test_port_placeholder_change():
     """
