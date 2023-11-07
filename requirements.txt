@@ -1,1 +1,4 @@
 customtkinter  # Assuming this is the correct package name
+pytest
+pyautogui
+pynput

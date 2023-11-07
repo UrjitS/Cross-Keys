@@ -104,7 +104,7 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         self.counter = 0
         # configure window
         self.title("Cross Keyboard")
-        self.geometry(f"{1920}x{1080}")
+        self.geometry(f"{1920}x{1080}+0+0")
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
