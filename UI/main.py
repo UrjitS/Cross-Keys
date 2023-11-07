@@ -488,7 +488,30 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
 
         self.destroy()
 
+    def get_ip_placeholder(self):
+        """
+        Returns the placeholder text for the IP address entry field.
 
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        str: The placeholder text for the IP address entry field.
+        """
+        return self.ip_address_entry._placeholder_text # pylint: disable=W0212
+
+    def get_port_placeholder(self):
+        """
+        Returns the placeholder text for the port number entry field.
+
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        str: The placeholder text for the port number entry field.
+        """
+        return self.port_entry._placeholder_text # pylint: disable=W0212
+    
 if __name__ == "__main__":
     app = App()
     app.mainloop()
