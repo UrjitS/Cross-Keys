@@ -1,6 +1,7 @@
 """
 This module performs UI automation tests.
 """
+# isort: off
 import time
 import pyautogui
 import pytest
