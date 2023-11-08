@@ -289,6 +289,7 @@ def test_validate_ip_address():
     assert validate_ip_address("192.168.0.256") is False
     assert validate_ip_address("192.168.1") is False
 
+
 def test_validate_port_number():
     """
     Tests to see if the validate_port_number function returns the correct value.
@@ -302,6 +303,7 @@ def test_validate_port_number():
     assert validate_port_number("test") is False
     assert validate_port_number(65535.0) is False
     assert validate_port_number(-1) is False
+
 
 if __name__ == "__main__":
     pytest.main(["-v", "-s"])
