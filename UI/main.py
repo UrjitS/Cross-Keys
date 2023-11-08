@@ -191,7 +191,7 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         )
 
         self.status_output.grid(
-            row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew"
+            row=3, column=1, columnspan=2, padx=(0, 0), pady=(0, 0), sticky="nsew"
         )
 
         # create textbox
