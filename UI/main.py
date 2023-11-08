@@ -76,7 +76,7 @@ def validate_port_number(port_number: str):
     Returns:
     bool: True if the port number is valid, False otherwise.
     """
-    return bool(isinstance(port_number, int) and 0 <= port_number <= 65535)
+    return bool(isinstance(port_number, int) and 0 < port_number <= 65535)
 
 
 class App(customtkinter.CTk):  # pylint: disable=R0902

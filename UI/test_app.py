@@ -7,6 +7,7 @@ import pyautogui
 import pytest
 
 from main import App
+from main import validate_ip_address, validate_port_number
 
 
 def test_options_sender_update_state():
@@ -275,6 +276,32 @@ def test_port_placeholder_change():
     except RuntimeError:
         print("RuntimeError")
 
+
+def test_validate_ip_address():
+    """
+    Tests to see if the validate_ip_address function returns the correct value.
+    """
+    assert validate_ip_address("192.168.1.1") is True
+    assert validate_ip_address("10.0.0.1") is True
+    assert validate_ip_address("255.255.255.255") is True
+
+    assert validate_ip_address("256.256.256.256") is False
+    assert validate_ip_address("192.168.0.256") is False
+    assert validate_ip_address("192.168.1") is False
+
+def test_validate_port_number():
+    """
+    Tests to see if the validate_port_number function returns the correct value.
+    """
+    assert validate_port_number(5000) is True
+    assert validate_port_number(2) is True
+    assert validate_port_number(65535) is True
+
+    assert validate_port_number(0) is False
+    assert validate_port_number(65536) is False
+    assert validate_port_number("test") is False
+    assert validate_port_number(65535.0) is False
+    assert validate_port_number(-1) is False
 
 if __name__ == "__main__":
     pytest.main(["-v", "-s"])
