@@ -78,11 +78,13 @@ def validate_port_number(port_number: str):
     bool: True if the port number is valid, False otherwise.
     """
     try:
+        # Run the regex to check if the port number is valid
         port_regex = r"^\d{1,5}$"
         port_number = str(port_number)
         regex_status = bool(re.match(port_regex, port_number))
-        port_number = int(port_number)
-        bound_check_status = 0 < port_number <= 65535
+        # Convert the port number to an integer
+        port_number_int = int(port_number)
+        bound_check_status = 0 < port_number_int <= 65535
         return regex_status and bound_check_status
     except ValueError:
         return False
