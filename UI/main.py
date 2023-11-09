@@ -80,13 +80,13 @@ def validate_port_number(port_number: str):
     try:
         port_regex = r"^\d{1,5}$"
         port_number = str(port_number)
-        regex_status = bool(re.match(port_regex, port_number)) 
+        regex_status = bool(re.match(port_regex, port_number))
         port_number = int(port_number)
         bound_check_status = 0 < port_number <= 65535
         return regex_status and bound_check_status
     except ValueError:
         return False
-    
+
 
 class App(customtkinter.CTk):  # pylint: disable=R0902
     """
@@ -532,6 +532,31 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         str: The current apperance mode color 'light' or 'dark'.
         """
         return self._get_appearance_mode()  # pylint: disable=W0212
+
+    def get_start_button_state(self):
+        """
+        Returns the start buttons state.
+
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        str: The current state of the start button. disabled or normal.
+        """
+        return self.start_service_button._state  # pylint: disable=W0212
+
+    def get_stop_button_state(self):
+        """
+        Returns the stop buttons state.
+
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        str: The current state of the stop button. disabled or normal.
+        """
+        return self.stop_service_button._state  # pylint: disable=W0212
+
 
 if __name__ == "__main__":
     app = App()
