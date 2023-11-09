@@ -7,6 +7,7 @@ import threading
 import tkinter as tk
 import tkinter.messagebox
 import ipaddress
+import re
 
 import customtkinter
 
@@ -76,8 +77,16 @@ def validate_port_number(port_number: str):
     Returns:
     bool: True if the port number is valid, False otherwise.
     """
-    return bool(isinstance(port_number, int) and 0 < port_number <= 65535)
-
+    try:
+        port_regex = r"^\d{1,5}$"
+        port_number = str(port_number)
+        regex_status = bool(re.match(port_regex, port_number)) 
+        port_number = int(port_number)
+        bound_check_status = 0 < port_number <= 65535
+        return regex_status and bound_check_status
+    except ValueError:
+        return False
+    
 
 class App(customtkinter.CTk):  # pylint: disable=R0902
     """
@@ -512,6 +521,17 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         """
         return self.port_entry._placeholder_text  # pylint: disable=W0212
 
+    def get_apperance_mode_color(self):
+        """
+        Returns the cuurent apperance mode color.
+
+        Parameters:
+        self: The current instance of the App class.
+
+        Returns:
+        str: The current apperance mode color 'light' or 'dark'.
+        """
+        return self._get_appearance_mode()  # pylint: disable=W0212
 
 if __name__ == "__main__":
     app = App()

@@ -304,6 +304,191 @@ def test_validate_port_number():
     assert validate_port_number(65535.0) is False
     assert validate_port_number(-1) is False
 
+def test_apperance_mode_light_button():
+    """
+    Tests to see if after clicking the apperance_mode_button and selecting light mode,
+    the apperance_mode_button has the correct text and the UI changes color.
+    """
+    app = App()
+    try:
+
+        def test():
+            # Process all idle tasks to ensure the widget is drawn on the screen
+            app.update_idletasks()
+
+            # Get the position of the receiver_radio_button
+            x = app.appearance_mode_option_menu.winfo_rootx()
+            y = app.appearance_mode_option_menu.winfo_rooty()
+
+            # Move the mouse to the position + padding of the receiver_radio_button
+            pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+
+            # Wait until the button is visible or enabled
+            while not app.appearance_mode_option_menu.winfo_viewable():
+                time.sleep(0.1)
+
+            # Perform the click
+            pyautogui.click()
+            
+            # Schedule the assertion check to run after a delay
+            app.after(100, choose_light_option)
+        
+        def choose_light_option():
+            # Get the value of service_choice
+            pyautogui.moveRel(40, 40)
+            pyautogui.click()
+            app.after(100, check_service_choice)
+            
+        def check_service_choice():
+            # Get the value of service_choice
+            service_choice = app.appearance_mode_option_menu.get()
+            assert service_choice == "Light"
+            assert app.get_apperance_mode_color() == "light"
+            app.stop_threading_event.set()
+            app.destroy()  # Close the window and stop the Tkinter event loop
+
+        # Schedule the test function to run after the tkinter main loop has started
+        app.after(100, test)
+
+        app.mainloop()
+    except RuntimeError:
+        print("RuntimeError")
+
+def test_apperance_mode_system_button():
+    """
+    Tests to see if after clicking the apperance_mode_button and selecting system mode,
+    the apperance_mode_button has the correct text and the UI changes color.
+    """
+    app = App()
+    try:
+
+        def test():
+            # Process all idle tasks to ensure the widget is drawn on the screen
+            app.update_idletasks()
+
+            # Get the position of the receiver_radio_button
+            x = app.appearance_mode_option_menu.winfo_rootx()
+            y = app.appearance_mode_option_menu.winfo_rooty()
+
+            # Move the mouse to the position + padding of the receiver_radio_button
+            pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+
+            # Wait until the button is visible or enabled
+            while not app.appearance_mode_option_menu.winfo_viewable():
+                time.sleep(0.1)
+
+            # Perform the click
+            pyautogui.click()
+            
+            # Schedule the assertion check to run after a delay
+            app.after(100, choose_light_option)
+        
+        def choose_light_option():
+            # Get the value of service_choice
+            pyautogui.moveRel(40, 80)
+            pyautogui.click()
+            app.after(100, check_service_choice)
+            
+        def check_service_choice():
+            # Get the value of service_choice
+            service_choice = app.appearance_mode_option_menu.get()
+            assert service_choice == "Dark"
+            assert app.get_apperance_mode_color() == "dark"
+            app.stop_threading_event.set()
+            app.destroy()  # Close the window and stop the Tkinter event loop
+
+        # Schedule the test function to run after the tkinter main loop has started
+        app.after(100, test)
+
+        app.mainloop()
+    except RuntimeError:
+        print("RuntimeError")
+
+def test_status_messages():
+    """
+    Tests to see if the status message changes when the user clicks start button
+    """
+    app = App()
+    try:
+
+        def test():
+            # Ensure the status message is not empty
+            assert app.program_status.get() != ""
+            # Process all idle tasks to ensure the widget is drawn on the screen
+            app.update_idletasks()
+
+            # Get the position of the receiver_radio_button
+            x = app.start_service_button.winfo_rootx()
+            y = app.start_service_button.winfo_rooty()
+
+            # Move the mouse to the position + padding of the receiver_radio_button
+            pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+
+            # Wait until the button is visible or enabled
+            while not app.start_service_button.winfo_viewable():
+                time.sleep(0.1)
+
+            # Perform the click
+            pyautogui.click()
+            
+            # Schedule the assertion check to run after a delay
+            app.after(100, check_service_choice)
+            
+        def check_service_choice():
+            # Asset that the status message displays an error message
+            assert app.program_status.get() == "Error: Invalid IP Address or Port"
+            app.stop_threading_event.set()
+            app.destroy()  # Close the window and stop the Tkinter event loop
+
+        # Schedule the test function to run after the tkinter main loop has started
+        app.after(100, test)
+
+        app.mainloop()
+    except RuntimeError:
+        print("RuntimeError")
+
+# def test_start_button():
+#     """
+#     Tests to see if the start button disables the stop button
+#     """
+#     app = App()
+#     try:
+
+#         def test():
+#             # Process all idle tasks to ensure the widget is drawn on the screen
+#             app.update_idletasks()
+
+#             # Get the position of the receiver_radio_button
+#             x = app.start_service_button.winfo_rootx()
+#             y = app.start_service_button.winfo_rooty()
+
+#             # Move the mouse to the position + padding of the receiver_radio_button
+#             pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+
+#             # Wait until the button is visible or enabled
+#             while not app.start_service_button.winfo_viewable():
+#                 time.sleep(0.1)
+            
+#             # app.ip_address_entry.insert(0, "127.0.0.1")
+#             # app.port_entry.insert(0, "5000")
+#             pyautogui.click()
+            
+#             # Schedule the assertion check to run after a delay
+#             app.after(5000, check_service_choice)
+            
+#         def check_service_choice():
+#             # Asset that the status message displays an error message
+#             assert app.start_service_button._state == "disabled"
+#             assert app.stop_service_button._state == "normal"
+#             app.stop_threading_event.set()
+#             app.destroy()  # Close the window and stop the Tkinter event loop
+
+#         # Schedule the test function to run after the tkinter main loop has started
+#         app.after(100, test)
+
+#         app.mainloop()
+#     except RuntimeError:
+#         print("RuntimeError")
 
 if __name__ == "__main__":
     pytest.main(["-v", "-s"])
