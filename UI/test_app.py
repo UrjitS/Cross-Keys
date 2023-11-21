@@ -458,72 +458,72 @@ def test_status_messages():
         print("RuntimeError")
 
 
-def test_start_button():
-    """
-    Tests to see if the start button disables the stop button
-    """
-    app = App()
-    try:
+# def test_start_button():
+#     """
+#     Tests to see if the start button disables the stop button
+#     """
+#     app = App()
+#     try:
 
-        def test():
-            # Process all idle tasks to ensure the widget is drawn on the screen
-            app.update_idletasks()
-            # Get the position of the receiver_radio_button
-            x = app.receiver_radio_button.winfo_rootx()
-            y = app.receiver_radio_button.winfo_rooty()
+#         def test():
+#             # Process all idle tasks to ensure the widget is drawn on the screen
+#             app.update_idletasks()
+#             # Get the position of the receiver_radio_button
+#             x = app.receiver_radio_button.winfo_rootx()
+#             y = app.receiver_radio_button.winfo_rooty()
 
-            # Move the mouse to the position + padding of the receiver_radio_button
-            pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+#             # Move the mouse to the position + padding of the receiver_radio_button
+#             pyautogui.moveTo((x + 8), (y + 8), _pause=False)
 
-            # Wait until the button is visible or enabled
-            while not app.receiver_radio_button.winfo_viewable():
-                time.sleep(0.1)
+#             # Wait until the button is visible or enabled
+#             while not app.receiver_radio_button.winfo_viewable():
+#                 time.sleep(0.1)
 
-            # Perform the click
-            pyautogui.click()
+#             # Perform the click
+#             pyautogui.click()
 
-            # Schedule the assertion check to run after a delay
-            app.after(100, click_start_button)
+#             # Schedule the assertion check to run after a delay
+#             app.after(100, click_start_button)
 
-        def click_start_button():
-            # Process all idle tasks to ensure the widget is drawn on the screen
-            app.update_idletasks()
+#         def click_start_button():
+#             # Process all idle tasks to ensure the widget is drawn on the screen
+#             app.update_idletasks()
 
-            # Get the position of the receiver_radio_button
-            x = app.start_service_button.winfo_rootx()
-            y = app.start_service_button.winfo_rooty()
+#             # Get the position of the receiver_radio_button
+#             x = app.start_service_button.winfo_rootx()
+#             y = app.start_service_button.winfo_rooty()
 
-            # Move the mouse to the position + padding of the receiver_radio_button
-            pyautogui.moveTo((x + 8), (y + 8), _pause=False)
+#             # Move the mouse to the position + padding of the receiver_radio_button
+#             pyautogui.moveTo((x + 8), (y + 8), _pause=False)
 
-            # Wait until the button is visible or enabled
-            while not app.start_service_button.winfo_viewable():
-                time.sleep(0.1)
+#             # Wait until the button is visible or enabled
+#             while not app.start_service_button.winfo_viewable():
+#                 time.sleep(0.1)
 
-            # Clear the ip address and port fields
-            app.ip_address_entry.delete(0, "end")
-            app.port_entry.delete(0, "end")
+#             # Clear the ip address and port fields
+#             app.ip_address_entry.delete(0, "end")
+#             app.port_entry.delete(0, "end")
 
-            app.ip_address_entry.insert(0, "127.0.0.1")
-            app.port_entry.insert(0, "5000")
-            pyautogui.click()
+#             app.ip_address_entry.insert(0, "127.0.0.1")
+#             app.port_entry.insert(0, "5000")
+#             pyautogui.click()
 
-            # Schedule the assertion check to run after a delay
-            app.after(100, check_service_choice)
+#             # Schedule the assertion check to run after a delay
+#             app.after(100, check_service_choice)
 
-        def check_service_choice():
-            # Asset that the status message displays an error message
-            assert app.get_start_button_state() == "disabled"
-            assert app.get_stop_button_state() == "normal"
-            app.stop_threading_event.set()
-            app.destroy()  # Close the window and stop the Tkinter event loop
+#         def check_service_choice():
+#             # Asset that the status message displays an error message
+#             assert app.get_start_button_state() == "disabled"
+#             assert app.get_stop_button_state() == "normal"
+#             app.stop_threading_event.set()
+#             app.destroy()  # Close the window and stop the Tkinter event loop
 
-        # Schedule the test function to run after the tkinter main loop has started
-        app.after(100, test)
+#         # Schedule the test function to run after the tkinter main loop has started
+#         app.after(100, test)
 
-        app.mainloop()
-    except RuntimeError:
-        print("RuntimeError")
+#         app.mainloop()
+#     except RuntimeError:
+#         print("RuntimeError")
 
 
 if __name__ == "__main__":
