@@ -16,12 +16,130 @@ import options
 # Global variables to track mouse and keyboard state
 
 
+def handle_click(packet):
+    """
+    Handles a mouse click command received from the server.
+
+    Args:
+        packet (list): A list of strings containing the command data.
+        The list should have the following format: [button, x_coordinate, y_coordinate]
+
+    Returns:
+        None
+    """
+    try:
+        # Extract the button and coordinates from the packet
+        clicked_button = str(packet[1])
+        x_coordinate = int(packet[2])
+        y_coordinate = int(packet[3])
+
+        # Print a message indicating the button and coordinates
+        print(
+            "Clicked: "
+            + str(clicked_button)
+            + " X: "
+            + str(x_coordinate)
+            + " Y: "
+            + str(y_coordinate)
+        )
+
+        # Perform the appropriate mouse action based on the received button
+        # l = left click
+        # r = right click
+        # m = middle click
+        # u = mouse release
+        if clicked_button == "l":
+            pyautogui.mouseDown(button="left", _pause=False)
+        elif clicked_button == "r":
+            pyautogui.mouseDown(button="right", _pause=False)
+        elif clicked_button == "m":
+            pyautogui.mouseDown(button="middle", _pause=False)
+        elif clicked_button == "u":
+            pyautogui.mouseUp(_pause=False)
+
+    # Handle malformed packets
+    except IndexError:
+        print("Malformed packet received")
+        return False
+    return True
+
+
+def handle_mouse(packet):
+    """
+    Handles a mouse movement command received from the server.
+
+    Args:
+        packet (list): A list of strings containing the command data.
+        The list should have the following format:
+        [screen_width, screen_height, x_coordinate, y_coordinate]
+
+    Returns:
+        None
+    """
+    try:
+        receiver_screen_width, receiver_screen_height = pyautogui.size()
+
+        # receive data from the server
+        try:
+            screen_width = int(packet[1])
+            screen_height = int(packet[2])
+            x_coordinate = int(packet[3])
+            y_coordinate = int(packet[4])
+
+            normalized_x = x_coordinate * (receiver_screen_width / screen_width)
+            normalized_y = y_coordinate * (receiver_screen_height / screen_height)
+
+            # Move mouse to received position
+            pyautogui.moveTo(normalized_x, normalized_y, _pause=False)
+
+        except IndexError:
+            print("Malformed packet received")
+            return False
+    except KeyboardInterrupt:
+        # close the connection
+        print("Keyboard Interrupt")
+        return False
+    return True
+
+
+def handle_scroll(packet):
+    """
+    Handles a mouse scroll command received from the server.
+
+    Args:
+        packet (list): A list of strings containing the command data.
+        The list should have the following format: [scroll_direction]
+
+    Returns:
+        None
+    """
+    try:
+        # Extract the scroll direction from the packet
+        scroll_direction = str(packet[1])
+
+        # Print a message indicating the scroll direction
+        print("Scrolling " + scroll_direction)
+
+        # Scroll the mouse up or down based on the received direction
+        if scroll_direction == "d":
+            pyautogui.scroll(clicks=-1, _pause=False)
+        elif scroll_direction == "u":
+            pyautogui.scroll(clicks=1, _pause=False)
+    except IndexError:
+        # Handle malformed packets by printing an error message and returning
+        print("Malformed packet received")
+        return False
+    return True
+
+
 class Receiver:
     """
     Receiver class handles commands received from the server for mouse and keyboard control.
     """
 
-    def __init__(self, ip_address, port, screen_share):
+    def __init__(
+        self, ip_address, port
+    ):  # pylint: disable=too-many-branches, too-many-statements
         """
         Initializes the Receiver object.
 
@@ -92,11 +210,11 @@ class Receiver:
                 try:
                     return_value = True
                     if packet[0] == "M":
-                        return_value = self.handle_mouse(packet)
+                        return_value = handle_mouse(packet)
                     elif packet[0] == "S":
-                        return_value = self.handle_scroll(packet)
+                        return_value = handle_scroll(packet)
                     elif packet[0] == "C":
-                        return_value = self.handle_click(packet)
+                        return_value = handle_click(packet)
                     elif packet[0] == "K":
                         return_value = self.handle_keyboard(packet)
                     # elif packet[0] == "I":
@@ -116,11 +234,13 @@ class Receiver:
                     print("Malformed packet received")
 
             # Handle socket errors
-            except socket.error as e:
-                print("Socket error while receiving data: ", e)
+            except socket.error as temp_error:
+                print("Socket error while receiving data: ", temp_error)
                 options.ERROR = True
                 options.RUNNING = False
-                options.ERROR_MESSAGE = "Socket error while receiving data: " + str(e)
+                options.ERROR_MESSAGE = "Socket error while receiving data: " + str(
+                    temp_error
+                )
                 self.client_socket.close()
                 self.socket_fd.close()
                 return
@@ -130,119 +250,6 @@ class Receiver:
         self.socket_fd.close()
 
         return
-
-    def handle_click(self, packet):
-        """
-        Handles a mouse click command received from the server.
-
-        Args:
-            packet (list): A list of strings containing the command data.
-            The list should have the following format: [button, x_coordinate, y_coordinate]
-
-        Returns:
-            None
-        """
-        try:
-            # Extract the button and coordinates from the packet
-            clicked_button = str(packet[1])
-            x_coordinate = int(packet[2])
-            y_coordinate = int(packet[3])
-
-            # Print a message indicating the button and coordinates
-            print(
-                "Clicked: "
-                + str(clicked_button)
-                + " X: "
-                + str(x_coordinate)
-                + " Y: "
-                + str(y_coordinate)
-            )
-
-            # Perform the appropriate mouse action based on the received button
-            # l = left click
-            # r = right click
-            # m = middle click
-            # u = mouse release
-            if clicked_button == "l":
-                pyautogui.mouseDown(button="left", _pause=False)
-            elif clicked_button == "r":
-                pyautogui.mouseDown(button="right", _pause=False)
-            elif clicked_button == "m":
-                pyautogui.mouseDown(button="middle", _pause=False)
-            elif clicked_button == "u":
-                pyautogui.mouseUp(_pause=False)
-
-        # Handle malformed packets
-        except IndexError:
-            print("Malformed packet received")
-            return False
-        return True
-
-    def handle_scroll(self, packet):
-        """
-        Handles a mouse scroll command received from the server.
-
-        Args:
-            packet (list): A list of strings containing the command data.
-            The list should have the following format: [scroll_direction]
-
-        Returns:
-            None
-        """
-        try:
-            # Extract the scroll direction from the packet
-            scroll_direction = str(packet[1])
-
-            # Print a message indicating the scroll direction
-            print("Scrolling " + scroll_direction)
-
-            # Scroll the mouse up or down based on the received direction
-            if scroll_direction == "d":
-                pyautogui.scroll(clicks=-1, _pause=False)
-            elif scroll_direction == "u":
-                pyautogui.scroll(clicks=1, _pause=False)
-        except IndexError:
-            # Handle malformed packets by printing an error message and returning
-            print("Malformed packet received")
-            return False
-        return True
-
-    def handle_mouse(self, packet):
-        """
-        Handles a mouse movement command received from the server.
-
-        Args:
-            packet (list): A list of strings containing the command data.
-            The list should have the following format:
-            [screen_width, screen_height, x_coordinate, y_coordinate]
-
-        Returns:
-            None
-        """
-        try:
-            receiver_screen_width, receiver_screen_height = pyautogui.size()
-
-            # receive data from the server
-            try:
-                screen_width = int(packet[1])
-                screen_height = int(packet[2])
-                x_coordinate = int(packet[3])
-                y_coordinate = int(packet[4])
-
-                normalized_x = x_coordinate * (receiver_screen_width / screen_width)
-                normalized_y = y_coordinate * (receiver_screen_height / screen_height)
-
-                # Move mouse to received position
-                pyautogui.moveTo(normalized_x, normalized_y, _pause=False)
-
-            except IndexError:
-                print("Malformed packet received")
-                return False
-        except KeyboardInterrupt:
-            # close the connection
-            print("Keyboard Interrupt")
-            return False
-        return True
 
     def handle_keyboard(self, packet):
         """
@@ -369,7 +376,6 @@ def create_receiver_connection(stop_threading_event, receiver_options):
     receiver = Receiver(
         receiver_options["ip_address"],
         receiver_options["port"],
-        receiver_options["screen_share"],
     )
     while not stop_threading_event.is_set():
         # Do some work
