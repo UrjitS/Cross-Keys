@@ -22,4 +22,3 @@ with mss() as sct:
 
 # if __name__ == "__main__":
 #     main()
-    
