@@ -8,6 +8,7 @@ import tkinter as tk
 import tkinter.messagebox
 import ipaddress
 import re
+import keyboard
 
 import customtkinter
 
@@ -337,7 +338,8 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
             service_choice = self.radio_button_value.get()
             if service_choice == 0:
                 # Hide the main frame and the right sidebar frame
-                # self.attributes("-fullscreen", True)
+                self.attributes("-fullscreen", True)
+                keyboard.block_key("tab", suppress=True)
                 self.port_entry.grid_remove()
                 self.ip_address_entry.grid_remove()
                 self.radiobutton_frame.grid_remove()  # Hide the right sidebar frame
@@ -392,6 +394,7 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         """
         print("Reseting UI")
         self.attributes("-fullscreen", False)  # Exit fullscreen
+        keyboard.unblock_key("tab")
         self.port_entry.grid()
         self.ip_address_entry.grid()
         self.radiobutton_frame.grid()  # Hide the right sidebar frame

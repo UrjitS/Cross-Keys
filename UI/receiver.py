@@ -184,6 +184,7 @@ class Receiver:
                         options.RUNNING = False
                         options.ERROR_MESSAGE = "Connection Clossed by Sender"
                         data = False
+                        self.client_socket.close()
                         break
 
                 # If no data is received, the client has disconnected and break to loop
@@ -217,16 +218,10 @@ class Receiver:
                         return_value = handle_click(packet)
                     elif packet[0] == "K":
                         return_value = self.handle_keyboard(packet)
-                    # elif packet[0] == "I":
-                    #     print("Received I")
-                    #     screen_share_state = bool(str(packet[1]))
-                    #     if screen_share_state and screen_share:
-                    #         self.send_screen = True
-                    #     print(screen_share_state)
-
                     # If the return value is False, the client has disconnected
                     if return_value is False:
                         print("Client disconnected or error occurred")
+                        self.client_socket.close()
                         break
 
                 # Handle malformed packets
@@ -280,8 +275,7 @@ class Receiver:
                 self.currently_pressed_keys.append(key_pressed)
             elif key_state == "R":
                 pyautogui.keyUp(key_pressed, _pause=False)
-                if key_pressed in self.currently_pressed_keys:
-                    self.currently_pressed_keys.remove(key_pressed)
+                self.currently_pressed_keys = [key for key in self.currently_pressed_keys if key != key_pressed]
 
         # Handle malformed packets
         except IndexError:
@@ -358,6 +352,7 @@ class Receiver:
 
         # Close the server socket
         self.socket_fd.close()
+        print("Connection closed successfully")
 
 
 def create_receiver_connection(stop_threading_event, receiver_options):
