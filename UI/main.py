@@ -123,18 +123,13 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
     """
     The main application for the Cross Keyboard program.
     """
+    _shared_state = {}
 
     def __init__(self):
-        """
-        Initializes the Cross Keyboard application.
-
-        Parameters:
-        self: The current instance of the App class.
-
-        Returns:
-        None
-        """
-        super().__init__()
+        self.__dict__ = self._shared_state
+        if 'initialized' not in self._shared_state:
+            self._shared_state['initialized'] = True
+            super().__init__()  # Call the superclass's __init__ method
         self.stop_threading_event = threading.Event()
         self.receiver_thread = None
         self.sender_thread = None
