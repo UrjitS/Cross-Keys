@@ -8,7 +8,6 @@ import tkinter as tk
 import tkinter.messagebox
 import ipaddress
 import re
-from pyinstrument import Profiler
 
 import customtkinter
 
@@ -562,11 +561,5 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
 
 
 if __name__ == "__main__":
-    profiler = Profiler()
-    profiler.start()
-
     app = App()
     app.mainloop()
-    profiler.stop()
-
-    profiler.print()

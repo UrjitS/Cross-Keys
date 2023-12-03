@@ -174,7 +174,7 @@ class Sender:
 
             # Check if keyboard and mouse tracking are enabled
             if not self.track_keyboard or not self.track_mouse:
-                return False
+                return True
 
             # Check if the key is currently pressed
             if self.currently_pressed_keys.count(key_pressed) == 0:
@@ -247,7 +247,7 @@ class Sender:
         try:
             # Check if keyboard and mouse tracking are enabled
             if not self.track_keyboard or not self.track_mouse:
-                return False
+                return True
 
             # Extract the key that was released
             key_pressed = key.char
@@ -270,7 +270,7 @@ class Sender:
         except AttributeError:  # Special Characters i.e. tab, alt, space, ctrl
             # Check if keyboard and mouse tracking are enabled
             if not self.track_keyboard or not self.track_mouse:
-                return False
+                return True
 
             # Extract the special key that was released
             special_key_pressed = str(key)[4:]
@@ -317,7 +317,7 @@ class Sender:
             or (not self.track_mouse)
             or (self.current_mouse_position == (x_coord, y_coord))
         ):
-            return False
+            return True
 
         print(f"Mouse moved to ({x_coord}, {y_coord})")
 
@@ -358,7 +358,7 @@ class Sender:
             print("Not running")
             return False
         if not self.track_keyboard or not self.track_mouse:
-            return False
+            return True
 
         clicked_button = str(button)[7:][:1]
         packet_header = f"C{chr(3)}"
@@ -394,7 +394,7 @@ class Sender:
             print("Not running")
             return False
         if not self.track_keyboard or not self.track_mouse:
-            return False
+            return True
         # Key_Identifier ETX Scroll_Direction ETX CRLF
         scroll_direction = "d" if dy_coord < 0 else "u"
         packet = f"S{chr(3)}{scroll_direction}{chr(3)}\r\n"
