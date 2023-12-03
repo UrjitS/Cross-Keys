@@ -37,6 +37,34 @@ def change_appearance_mode_event(new_appearance_mode: str):
     customtkinter.set_appearance_mode(new_appearance_mode)
 
 
+def block_tab(pressed_key):
+    """
+    Blocks the tab key.
+
+    Parameters:
+    pressed_key (keyboard.KeyboardEvent): The key that was pressed.
+
+    Returns:
+    None
+    """
+    if pressed_key.name == "alt":
+        keyboard.block_key("tab")
+
+
+def unblock_tab(pressed_key):
+    """
+    Unblocks the tab key.
+
+    Parameters:
+    pressed_key (keyboard.KeyboardEvent): The key that was pressed.
+
+    Returns:
+    None
+    """
+    if pressed_key.name == "alt":
+        keyboard.unblock_key("tab")
+
+
 def change_scaling_event(new_scaling: str):
     """
     Changes the scaling of the widgets in the application.
@@ -339,7 +367,7 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
             if service_choice == 0:
                 # Hide the main frame and the right sidebar frame
                 self.attributes("-fullscreen", True)
-                keyboard.block_key("tab", suppress=True)
+                keyboard.on_press(block_tab)
                 self.port_entry.grid_remove()
                 self.ip_address_entry.grid_remove()
                 self.radiobutton_frame.grid_remove()  # Hide the right sidebar frame
@@ -394,7 +422,7 @@ class App(customtkinter.CTk):  # pylint: disable=R0902
         """
         print("Reseting UI")
         self.attributes("-fullscreen", False)  # Exit fullscreen
-        keyboard.unblock_key("tab")
+        keyboard.on_release(unblock_tab)
         self.port_entry.grid()
         self.ip_address_entry.grid()
         self.radiobutton_frame.grid()  # Hide the right sidebar frame
