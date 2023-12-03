@@ -275,7 +275,9 @@ class Receiver:
                 self.currently_pressed_keys.append(key_pressed)
             elif key_state == "R":
                 pyautogui.keyUp(key_pressed, _pause=False)
-                self.currently_pressed_keys = [key for key in self.currently_pressed_keys if key != key_pressed]
+                self.currently_pressed_keys = [
+                    key for key in self.currently_pressed_keys if key != key_pressed
+                ]
 
         # Handle malformed packets
         except IndexError:
