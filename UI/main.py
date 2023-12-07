@@ -9,6 +9,7 @@ import tkinter.messagebox
 import ipaddress
 import re
 import keyboard
+from typing import Dict, Any
 
 import customtkinter
 
@@ -124,7 +125,7 @@ class App(customtkinter.CTk):
     The main application for the Cross Keyboard program.
     """
 
-    _shared_state = {}
+    _shared_state: Dict[str, Any] = {}
 
     _instance = None
 
