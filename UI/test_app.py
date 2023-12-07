@@ -12,6 +12,7 @@ from main import validate_ip_address, validate_port_number
 from receiver import Receiver
 from receiver import handle_mouse
 
+
 def test_options_sender_update_state():
     """
     Tests clicking the sender_radio_button and checks the value of service_choice.
@@ -310,6 +311,7 @@ def test_validate_port_number():
     assert validate_port_number(65535.0) is False
     assert validate_port_number(-1) is False
 
+
 def test_mouse_movement():
     """
     Tests to see if the mouse moves when the mouse packet is received.
@@ -317,6 +319,7 @@ def test_mouse_movement():
     packet = ["S", pyautogui.size().width, pyautogui.size().height, 10, 10]
     handle_mouse(packet)
     assert pyautogui.position() == (10, 10)
+
 
 def test_keyboard_press():
     """
@@ -327,6 +330,7 @@ def test_keyboard_press():
     Receiver.handle_keyboard(Receiver, packet)
     assert Receiver.currently_pressed_keys[0] == "a"  # Check if the 'a' key is pressed
     pyautogui.keyUp("a")  # Release the 'a' key
+
 
 def test_apperance_mode_light_button():
     """
