@@ -9,6 +9,8 @@ import pytest
 from main import App
 from main import validate_ip_address, validate_port_number
 
+from receiver import Receiver
+from receiver import handle_mouse
 
 def test_options_sender_update_state():
     """
@@ -308,6 +310,23 @@ def test_validate_port_number():
     assert validate_port_number(65535.0) is False
     assert validate_port_number(-1) is False
 
+def test_mouse_movement():
+    """
+    Tests to see if the mouse moves when the mouse packet is received.
+    """
+    packet = ["S", pyautogui.size().width, pyautogui.size().height, 10, 10]
+    handle_mouse(packet)
+    assert pyautogui.position() == (10, 10)
+
+def test_keyboard_press():
+    """
+    Tests to see if the keyboard presses when the keyboard packet is received.
+    """
+    packet = ["K", "P", "a"]
+    Receiver.currently_pressed_keys = []
+    Receiver.handle_keyboard(Receiver, packet)
+    assert Receiver.currently_pressed_keys[0] == "a"  # Check if the 'a' key is pressed
+    pyautogui.keyUp("a")  # Release the 'a' key
 
 def test_apperance_mode_light_button():
     """
