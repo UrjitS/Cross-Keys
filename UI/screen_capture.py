@@ -1,3 +1,7 @@
+"""
+This script takes a screenshot and overlays the mouse cursor on top of it.
+"""
+# isort: off
 import pyautogui
 from PIL import Image
 from mss import mss
