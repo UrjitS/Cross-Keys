@@ -119,10 +119,17 @@ def validate_port_number(port_number: str):
         return False
 
 
-class App(customtkinter.CTk):  # pylint: disable=R0902
+class App(customtkinter.CTk):
     """
     The main application for the Cross Keyboard program.
     """
+
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(App, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
 
     def __init__(self):
         """
